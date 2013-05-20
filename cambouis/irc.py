@@ -32,7 +32,7 @@ class IRC(object):
         self.socket.send('PONG %s\r\n' % data)
 
     def privmsg(self, recipient, data):
-        self.socket.send('PRIVMSG %s %s\r\n' % (recipient, data))
+        self.socket.send('PRIVMSG %s :%s\r\n' % (recipient, data))
 
     def close(self):
         self.socket.close()
