@@ -47,7 +47,8 @@ class IRC(object):
 class Event(object):
 
     def __init__(self, data):
-        """Breaks a message from an IRC server into its prefix, command, and arguments.
+        """Breaks a message from an IRC server into its prefix,
+        command, and arguments.
         """
         prefix = ''
         trailing = []
@@ -74,7 +75,7 @@ class Event(object):
 
         if self.type == 'PRIVMSG':
             self.nick = self.prefix.split('!', 1)[0]
-            self.where = self.args[0]
+            self.chan = args[0] if args[0].startswith('#') else self.nick
             self.msg = self.args[1]
         if self.type == 'PING':
             self.msg = ''.join(self.args)
