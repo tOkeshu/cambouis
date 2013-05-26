@@ -22,7 +22,7 @@ class Bot(object):
         self.config = kwargs
         self.irc = IRC(**kwargs['irc'])
         self.streams = []
-        self.commands = []
+        self.commands = [('!len ', self.len)]
 
     def run(self):
         self.irc.connect()
@@ -52,6 +52,9 @@ class Bot(object):
         for prefix, method in self.commands:
             if event.msg.startswith(prefix):
                 method(event, event.msg[len(prefix):])
+
+    def len(self, event, message):
+        self.irc.reply(event, str(len(message)))
 
     def stop(self):
         for stream in self.streams:
