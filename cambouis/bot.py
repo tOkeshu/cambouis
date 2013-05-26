@@ -1,3 +1,4 @@
+from re import match
 from cambouis.irc import IRC
 from cambouis.twitter import firehose
 from spool import coroutine, select
@@ -22,7 +23,7 @@ class Bot(object):
         self.config = kwargs
         self.irc = IRC(**kwargs['irc'])
         self.streams = []
-        self.commands = [('!len ', self.len)]
+        self.commands = [('!len (.*)', self.len)]
 
     def run(self):
         self.irc.connect()
@@ -49,9 +50,10 @@ class Bot(object):
         self.irc.privmsg(CHANNEL, message.encode('utf-8'))
 
     def dispatch(self, event):
-        for prefix, method in self.commands:
-            if event.msg.startswith(prefix):
-                method(event, event.msg[len(prefix):])
+        for pattern, method in self.commands:
+            m = match(pattern, event.msg)
+            if m:
+                method(event, *m.groups())
 
     def len(self, event, message):
         self.irc.reply(event, str(len(message)))
