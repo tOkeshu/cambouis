@@ -40,6 +40,10 @@ class IRC(object):
         data = data.replace('\n', ' ')
         self.socket.send('PRIVMSG %s :%s\r\n' % (recipient, data))
 
+    def reply(self, event, data):
+        data = data.replace('\n', ' ')
+        self.socket.send('PRIVMSG %s :%s\r\n' % (event.chan, data))
+
     def close(self):
         self.socket.close()
 
