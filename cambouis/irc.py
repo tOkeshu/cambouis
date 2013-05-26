@@ -32,6 +32,9 @@ class IRC(object):
     def ping(self, data):
         self.socket.send('PONG %s\r\n' % data)
 
+    def join(self, *channels):
+        [self.socket.send('JOIN %s\r\n' % channel) for channel in channels]
+
     @throttle(5, 1)
     def privmsg(self, recipient, data):
         data = data.replace('\n', ' ')
