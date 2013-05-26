@@ -1,4 +1,5 @@
 from socket import socket, AF_INET, SOCK_STREAM
+from cambouis.utils import throttle
 
 class IRC(object):
 
@@ -31,6 +32,7 @@ class IRC(object):
     def ping(self, data):
         self.socket.send('PONG %s\r\n' % data)
 
+    @throttle(5, 1)
     def privmsg(self, recipient, data):
         data = data.replace('\n', ' ')
         self.socket.send('PRIVMSG %s :%s\r\n' % (recipient, data))
