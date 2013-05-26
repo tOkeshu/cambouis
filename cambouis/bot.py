@@ -23,7 +23,7 @@ class Bot(object):
         self.config = kwargs
         self.irc = IRC(**kwargs['irc'])
         self.streams = []
-        self.commands = [('!len (.*)', self.len)]
+        self.commands = []
 
     def run(self):
         self.irc.connect()
@@ -55,11 +55,17 @@ class Bot(object):
             if m:
                 method(event, *m.groups())
 
-    def len(self, event, message):
-        self.irc.reply(event, str(len(message)))
+    def on(self, pattern):
+        def _on(method):
+            self.commands.append((pattern, method))
+            return method
+        return _on
 
     def stop(self):
         for stream in self.streams:
             stream.close()
         self.irc.close()
+
+
+bot = Bot(irc = dict(host='irc.freenode.net', nick='LeCambouis'))
 

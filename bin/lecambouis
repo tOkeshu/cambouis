@@ -1,6 +1,6 @@
-from cambouis import Bot
+from cambouis import bot
 
 
 if __name__ == '__main__':
-    Bot(irc = dict(host='irc.freenode.net', nick='LeCambouis')).run()
+    bot.run()
 
