@@ -22,6 +22,7 @@ class Bot(object):
         self.config = kwargs
         self.irc = IRC(**kwargs['irc'])
         self.streams = []
+        self.commands = []
 
     def run(self):
         self.irc.connect()
@@ -38,7 +39,7 @@ class Bot(object):
         if event.type == 'PING':
             self.irc.ping(event.msg)
         if event.type == 'PRIVMSG':
-            self.irc.privmsg(event.nick, event.msg)
+            self.dispatch(event)
         elif event.type == 'ERROR':
             self.stop()
 
@@ -46,6 +47,11 @@ class Bot(object):
         message = "%s: %s %s" % (tweet.user, tweet.status, tweet.permalink)
         print(message)
         self.irc.privmsg(CHANNEL, message.encode('utf-8'))
+
+    def dispatch(self, event):
+        for prefix, method in self.commands:
+            if event.msg.startswith(prefix):
+                method(event, event.msg[len(prefix):])
 
     def stop(self):
         for stream in self.streams:
